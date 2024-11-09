@@ -1,4 +1,4 @@
-package store.util;
+package store.util.reader;
 
 import store.model.dto.ProductDto;
 

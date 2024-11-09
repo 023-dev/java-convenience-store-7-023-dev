@@ -1,4 +1,4 @@
-package store.util;
+package store.util.reader;
 
 import java.time.LocalDate;
 import store.model.dto.PromotionDto;
