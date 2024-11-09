@@ -11,7 +11,7 @@ public abstract class AbstractFileReader<T> {
 
     protected static final String DELIMITER = ",";
 
-    public List<T> load (String filePath) {
+    public List<T> readFile (String filePath) {
         try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
             return lines
                     .skip(1)
