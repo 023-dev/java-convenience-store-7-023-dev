@@ -3,8 +3,6 @@ package store.util.loader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +43,7 @@ public class ProductLoader {
 
 
     private Product parseLine(String line) {
-        String[] fields = line.split(DELIMITER);
+        String[] fields = splitLine(line);
 
         if (fields.length < FIELDS_LENGTH) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
