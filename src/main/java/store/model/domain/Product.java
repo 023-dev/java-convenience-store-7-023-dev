@@ -21,6 +21,10 @@ public class Product {
         }
         stock -= quantity;
     }
+    
+    public int applyPromotion(int quantity) {
+        return promotion.map(p -> p.calculateTotalQuantity(quantity)).orElse(quantity);
+    }
 
     public String getName() {
         return name;

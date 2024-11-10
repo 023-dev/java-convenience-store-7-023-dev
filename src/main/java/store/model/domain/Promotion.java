@@ -45,6 +45,14 @@ public class Promotion {
                 (today.isBefore(endDate) || today.isEqual(endDate));
     }
 
+    public int calculateTotalQuantity(int purchasedQuantity) {
+        if (!isInPromotionPeriod()) {
+            return purchasedQuantity;
+        }
+        int totalFreeItems = (purchasedQuantity / buyQuantity) * freeQuantity;
+        return purchasedQuantity + totalFreeItems;
+    }
+
     public String getName() {
         return name;
     }
