@@ -9,4 +9,9 @@ public class InputView {
         System.out.println(INPUT_ITEM_QUANTITY);
         return Console.readLine();
     }
+
+    public static boolean readMembershipDiscount() {
+        System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
+        return "Y".equalsIgnoreCase(Console.readLine());
+    }
 }
