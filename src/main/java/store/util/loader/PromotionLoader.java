@@ -3,9 +3,8 @@ package store.util.loader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,8 +45,8 @@ public class PromotionLoader {
         String name = fields[NAME_INDEX];
         int buyQuantity = parseInteger(fields[BUY_INDEX]);
         int getQuantity = parseInteger(fields[GET_INDEX]);
-        LocalDate startDate = parseDate(fields[START_DATE_INDEX]);
-        LocalDate endDate = parseDate(fields[END_DATE_INDEX]);
+        LocalDateTime startDate = parseDateTime(fields[START_DATE_INDEX]);
+        LocalDateTime endDate = parseDateTime(fields[END_DATE_INDEX]);
 
         return new Promotion(name, buyQuantity, getQuantity, startDate, endDate);
     }
@@ -68,9 +67,9 @@ public class PromotionLoader {
         }
     }
 
-    private static LocalDate parseDate(String value) {
+    private static LocalDateTime parseDateTime(String value) {
         try {
-            return LocalDate.parse(value);
+            return LocalDateTime.parse(value);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_DATE_FORMAT.getMessage());
         }
