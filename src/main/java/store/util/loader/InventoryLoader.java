@@ -65,6 +65,9 @@ public class InventoryLoader {
     }
 
     private Promotion findMatchingPromotion(List<PromotionDto> promotionDtos, String promotionName) {
+        if (promotionName.equals("null")) {
+            return null;
+        }
         return promotionDtos.stream()
                 .filter(promotion -> promotion.name().equals(promotionName))
                 .map(this::convertToPromotion)
