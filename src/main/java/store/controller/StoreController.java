@@ -7,6 +7,8 @@ import store.view.OutputView;
 import store.service.PaymentService;
 
 public class StoreController {
+    private static final String YES = "Y";
+
     private final InputView inputView;
     private final OutputView outputView;
     private final Products products;
@@ -24,6 +26,7 @@ public class StoreController {
     public void run() {
         boolean continueShopping = true;
         while (continueShopping) {
+            outputView.printWelcomeMessage();
             continueShopping = askToContinueShopping();
         }
     }
