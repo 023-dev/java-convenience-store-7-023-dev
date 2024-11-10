@@ -27,6 +27,7 @@ public class StoreController {
         boolean continueShopping = true;
         while (continueShopping) {
             outputView.printWelcomeMessage();
+            outputView.printProducts(products);
             continueShopping = askToContinueShopping();
         }
     }
