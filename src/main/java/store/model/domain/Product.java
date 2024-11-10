@@ -14,4 +14,27 @@ public class Product {
         this.stock = stock;
         this.promotion = promotion;
     }
+
+    public void reduceStock(int quantity) {
+        if (quantity > stock) {
+            throw new IllegalStateException("[ERROR] 재고 부족: " + name);
+        }
+        stock -= quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public Optional<Promotion> getPromotion() {
+        return promotion;
+    }
 }
