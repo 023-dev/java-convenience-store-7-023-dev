@@ -2,6 +2,7 @@ package store.model.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import store.model.dto.ProductDto;
 
 public class Promotions {
@@ -13,5 +14,11 @@ public class Promotions {
 
     public void addPromotion(Promotion promotion) {
         promotions.add(promotion);
+    }
+
+    public Optional<Promotion> findByName(String name) {
+        return promotions.stream()
+                .filter(promotion -> promotion.getName().equalsIgnoreCase(name))
+                .findFirst();
     }
 }

@@ -22,4 +22,9 @@ public class Promotion {
         return (today.isAfter(startDate) || today.isEqual(startDate)) &&
                 (today.isBefore(endDate) || today.isEqual(endDate));
     }
+
+    public String getName() {
+        return name;
+    }
+
 }
