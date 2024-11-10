@@ -19,4 +19,16 @@ public class OutputView {
     public static void printWelcomeMessage() {
         System.out.println(WELCOME_MESSAGE);
     }
+
+    public static void printProducts(Products products) {
+        System.out.println(PRODUCT_LIST_HEADER);
+        String stockStatus = NO_STOCK_MESSAGE;
+        for (Product product : products.getProducts()) {
+            if (product.getStock() > 0) {
+                stockStatus = STOCK_FORMAT.formatted(product.getStock());
+            }
+            String promotionName = product.getPromotion().map(Promotion::getName).orElse(EMPTY);
+            System.out.println(PRODUCT_LIST_BODY.formatted(product.getName(), product.getPrice(), stockStatus, promotionName));
+        }
+    }
 }
