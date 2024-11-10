@@ -45,8 +45,13 @@ public class StoreController {
         boolean continueShopping = true;
         while (continueShopping) {
             startShopping();
-            continueShopping = askToContinueShopping();
-            getOrders();
+            try {
+                List<Order> orders = getOrders();
+                boolean isMember = askToMembership();
+                continueShopping = askToContinueShopping();
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
         }
     }
 
@@ -87,6 +92,11 @@ public class StoreController {
     private List<String> parseItem(String input) {
         String parseInput =input.replace(LEFT_BRACKET, EMPTY).replace(RIGHT_BRACKET, EMPTY);
         return List.of(parseInput.split(QUANTITY_DELIMITER));
+    }
+
+    private boolean askToMembership() {
+        String answer = inputView.readMembership();
+        return answer.equalsIgnoreCase(YES);
     }
 
     private boolean askToContinueShopping() {
