@@ -22,4 +22,9 @@ public class InputView {
         System.out.println((PROMOTION_SHORTAGE_PROMPT).formatted(productName, shortageQuantity));
         return Console.readLine();
     }
+
+    public String readMembership() {
+        System.out.println(MEMBERSHIP_PROMPT);
+        return Console.readLine();
+    }
 }
