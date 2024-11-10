@@ -20,4 +20,7 @@ public class StoreController {
         this.promotions = promotion;
         this.paymentService = paymentService;
     }
+
+    public void run() {
+    }
 }
