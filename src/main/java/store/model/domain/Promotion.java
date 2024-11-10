@@ -18,7 +18,7 @@ public class Promotion {
     }
 
     private boolean isInPromotionPeriod() {
-        LocalDate today = LocalDate.today();
+        LocalDate today = LocalDate.now();
         return (today.isAfter(startDate) || today.isEqual(startDate)) &&
                 (today.isBefore(endDate) || today.isEqual(endDate));
     }
