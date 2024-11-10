@@ -2,6 +2,7 @@ package store.model.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Products {
     private final List<Product> products;
@@ -16,5 +17,11 @@ public class Products {
 
     public List<Product> getProducts() {
         return Collections.unmodifiableList(products);
+    }
+
+    public List<String> getProductNames() {
+        return products.stream()
+                .map(Product::getName)
+                .collect(Collectors.toList());
     }
 }
