@@ -1,5 +1,7 @@
 package store.view;
 
+import static store.common.Constants.NEW_LINE;
+
 import camp.nextstep.edu.missionutils.Console;
 
 public class InputView {
@@ -10,27 +12,27 @@ public class InputView {
     private static final String ADDITIONAL_PURCHASE_PROMPT = "감사합니다. 구매하고 싶은 다른 상품이 있나요? (Y/N)";
 
     public String readItemInput() {
-        System.out.println(ITEM_QUANTITY_PROMPT);
+        System.out.println(NEW_LINE+ITEM_QUANTITY_PROMPT);
         return Console.readLine();
     }
 
     public String readPromotion(String productName) {
-        System.out.println((PROMOTION_PROMPT).formatted(productName));
-        return Console.readLine();
+        System.out.println(NEW_LINE + (PROMOTION_PROMPT).formatted(productName));
+        return Console.readLine().toUpperCase();
     }
 
     public String readPromotionShortage(String productName, int shortageQuantity) {
-        System.out.println((PROMOTION_SHORTAGE_PROMPT).formatted(productName, shortageQuantity));
-        return Console.readLine();
+        System.out.println(NEW_LINE + (PROMOTION_SHORTAGE_PROMPT).formatted(productName, shortageQuantity));
+        return Console.readLine().toUpperCase();
     }
 
     public String readMembership() {
-        System.out.println(MEMBERSHIP_PROMPT);
-        return Console.readLine();
+        System.out.println(NEW_LINE + MEMBERSHIP_PROMPT);
+        return Console.readLine().toUpperCase();
     }
 
     public String readAdditionalPurchase() {
-        System.out.println(ADDITIONAL_PURCHASE_PROMPT);
-        return Console.readLine();
+        System.out.println(NEW_LINE + ADDITIONAL_PURCHASE_PROMPT);
+        return Console.readLine().toUpperCase();
     }
 }
