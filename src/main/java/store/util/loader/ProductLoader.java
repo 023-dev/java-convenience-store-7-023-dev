@@ -23,7 +23,6 @@ public class ProductLoader {
     private static final int PRICE_INDEX = 1;
     private static final int QUANTITY_INDEX = 2;
     private static final int PROMOTION_NAME_INDEX = 3;
-    private static final int FIELDS_LENGTH = 4;
 
     private final Promotions promotions;
 

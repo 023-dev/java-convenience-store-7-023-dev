@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -47,7 +46,6 @@ public class PromotionLoader {
         LocalDateTime startDate = parseDateTime(fields[START_DATE_INDEX]);
         LocalDateTime endDate = parseDateTime(fields[END_DATE_INDEX]);
         return new Promotion(name, buyQuantity, getQuantity, startDate, endDate);
-
     }
 
     private static int parseInteger(String value) {
