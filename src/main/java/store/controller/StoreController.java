@@ -22,5 +22,14 @@ public class StoreController {
     }
 
     public void run() {
+        boolean continueShopping = true;
+        while (continueShopping) {
+            continueShopping = askToContinueShopping();
+        }
+    }
+
+    private boolean askToContinueShopping() {
+        String answer = inputView.readAdditionalPurchase();
+        return answer.equalsIgnoreCase(YES);
     }
 }
