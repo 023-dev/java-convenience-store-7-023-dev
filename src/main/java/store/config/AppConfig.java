@@ -8,7 +8,7 @@ import store.util.loader.PromotionLoader;
 
 public class AppConfig {
     public StoreController storeController() {
-        return new StoreController(promotions(), products());
+        return new StoreController(promotions(), products(), paymentService());
     }
 
     public Promotions promotions() {
@@ -17,5 +17,9 @@ public class AppConfig {
 
     public Products products() {
         return new ProductLoader(promotions()).loadProducts();
+    }
+
+    public PaymentService paymentService() {
+        return new PaymentService();
     }
 }
