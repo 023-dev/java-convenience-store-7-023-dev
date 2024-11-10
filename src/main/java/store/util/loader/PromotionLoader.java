@@ -1,5 +1,7 @@
 package store.util.loader;
 
+import static store.common.Constants.DELIMITER;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,9 +15,7 @@ import store.model.domain.Promotions;
 import store.util.ErrorMessage;
 
 public class PromotionLoader {
-
-    protected static final String DELIMITER = ",";
-
+    private static final String PROMOTION_FILE_PATH = "src/main/resources/promotions.txt";
     private static final int NAME_INDEX = 0;
     private static final int BUY_INDEX = 1;
     private static final int GET_INDEX = 2;
@@ -23,8 +23,8 @@ public class PromotionLoader {
     private static final int END_DATE_INDEX = 4;
     private static final int FIELDS_LENGTH = 5;
 
-    public Promotions loadPromotions(String filePath) {
-        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+    public Promotions loadPromotions() {
+        try (Stream<String> lines = Files.lines(Paths.get(PROMOTION_FILE_PATH))) {
             List<Promotion> promotions = lines
                     .skip(1)
                     .map(this::parseLine)
@@ -38,10 +38,6 @@ public class PromotionLoader {
     private Promotion parseLine(String line) {
         String[] fields = splitLine(DELIMITER);
 
-        if (fields.length < FIELDS_LENGTH) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
-        }
-
         String name = fields[NAME_INDEX];
         int buyQuantity = parseInteger(fields[BUY_INDEX]);
         int getQuantity = parseInteger(fields[GET_INDEX]);
@@ -53,7 +49,9 @@ public class PromotionLoader {
 
     private static String[] splitLine(String line) {
         try {
-            return line.split(DELIMITER);
+            String[] fields = line.split(DELIMITER);
+            validateFiledsLength(fields);
+            return fields;
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
         }
@@ -72,6 +70,12 @@ public class PromotionLoader {
             return LocalDateTime.parse(value);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_DATE_FORMAT.getMessage());
+        }
+    }
+
+    private static void validateFiledsLength(String[] fields) {
+        if (fields.length < FIELDS_LENGTH) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
         }
     }
 }

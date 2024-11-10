@@ -1,5 +1,7 @@
 package store.util.loader;
 
+import static store.common.Constants.DELIMITER;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,9 +16,7 @@ import store.model.domain.Promotions;
 import store.util.ErrorMessage;
 
 public class ProductLoader {
-
-    protected static final String DELIMITER = ",";
-
+    private static final String PRODUCT_FILE_PATH = "src/main/resources/products.txt";
     private static final int NAME_INDEX = 0;
     private static final int PRICE_INDEX = 1;
     private static final int QUANTITY_INDEX = 2;
@@ -29,8 +29,8 @@ public class ProductLoader {
         this.promotions = promotions;
     }
 
-    public Products loadPromotions(String filePath) {
-        try (Stream<String> lines = Files.lines(Paths.get(filePath))) {
+    public Products loadPromotions() {
+        try (Stream<String> lines = Files.lines(Paths.get(PRODUCT_FILE_PATH))) {
             List<Product> products = lines
                     .skip(1)
                     .map(this::parseLine)
@@ -41,13 +41,8 @@ public class ProductLoader {
         }
     }
 
-
     private Product parseLine(String line) {
         String[] fields = splitLine(line);
-
-        if (fields.length < FIELDS_LENGTH) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
-        }
 
         String name = fields[NAME_INDEX];
         int price = parseInteger(fields[PRICE_INDEX]);
@@ -56,12 +51,13 @@ public class ProductLoader {
 
         Optional<Promotion> promotion = promotions.findByName(promotionName);
         return new Product(name, price, quantity, promotion);
-
     }
 
     private static String[] splitLine(String line) {
         try {
-            return line.split(DELIMITER);
+            String[] fields = line.split(DELIMITER);
+            validateFiledsLength(fields);
+            return fields;
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
         }
@@ -72,6 +68,12 @@ public class ProductLoader {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_NUMBER_FORMAT.getMessage());
+        }
+    }
+
+    private static void validateFiledsLength(String[] fields) {
+        if (fields.length < FIELDS_LENGTH) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
         }
     }
 }
