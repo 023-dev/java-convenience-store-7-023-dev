@@ -1,6 +1,6 @@
 package store.util.loader;
 
-import static store.common.Constants.DELIMITER;
+import static store.common.constant.Constants.DELIMITER;
 import static store.util.ErrorMessage.FILE_NOT_FOUNT_ERROR;
 
 import java.io.FileNotFoundException;
@@ -50,8 +50,10 @@ public class ProductLoader {
         int price = parseInteger(fields[PRICE_INDEX]);
         int quantity = parseInteger(fields[QUANTITY_INDEX]);
         String promotionName = fields[PROMOTION_NAME_INDEX];
-
-        Optional<Promotion> promotion = promotions.findByName(promotionName);
+        Optional<Promotion> promotion = Optional.empty();
+        if (!promotionName.equals("null")) {
+            promotion = promotions.findByName(promotionName);
+        }
         return new Product(name, price, quantity, promotion);
     }
 

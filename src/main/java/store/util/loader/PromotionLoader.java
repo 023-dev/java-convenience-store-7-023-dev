@@ -1,6 +1,6 @@
 package store.util.loader;
 
-import static store.common.Constants.DELIMITER;
+import static store.common.constant.Constants.DELIMITER;
 import static store.util.ErrorMessage.FILE_NOT_FOUNT_ERROR;
 
 import java.io.FileNotFoundException;
