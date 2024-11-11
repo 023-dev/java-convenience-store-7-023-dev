@@ -15,15 +15,26 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public void reduceStock(int quantity) {
-        if (quantity > stock) {
-            throw new IllegalStateException("[ERROR] 재고 부족: " + name);
-        }
-        stock -= quantity;
+    public int getActualQuantity(int orderedQuantity) {
+        if (promotion.isEmpty()) return orderedQuantity;
+        Promotion promotion = this.promotion.get();
+        return promotion.calculatePaidQuantity(orderedQuantity);
     }
-    
-    public int applyPromotion(int quantity) {
-        return promotion.map(p -> p.calculateTotalQuantity(quantity)).orElse(quantity);
+
+    public int getFreeQuantity(int orderedQuantity) {
+        if (promotion.isEmpty()) return 0;
+        Promotion promo = promotion.get();
+        return promo.calculateFreeQuantity(orderedQuantity);
+    }
+
+    public int calculateTotalPrice(int quantity) {
+        return price * quantity;
+    }
+
+    public int deductStockUpTo(int quantity) {
+        int deductQuantity = Math.min(quantity, stock);
+        stock -= deductQuantity;
+        return deductQuantity;
     }
 
     public String getName() {
@@ -40,5 +51,9 @@ public class Product {
 
     public Optional<Promotion> getPromotion() {
         return promotion;
+    }
+
+    public boolean hasPromotion() {
+        return promotion.isPresent();
     }
 }
