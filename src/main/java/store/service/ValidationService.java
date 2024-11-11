@@ -26,7 +26,7 @@ public class ValidationService {
         }
     }
 
-    private List<String> parseItem(String input) {
+    public List<String> parseItem(String input) {
         List<String> items = new ArrayList<>();
         validateItemFormat(input);
         String parseInput =input.replace(LEFT_BRACKET, EMPTY).replace(RIGHT_BRACKET, EMPTY);
@@ -36,19 +36,19 @@ public class ValidationService {
         return items;
     }
 
-    private void validateItemFormat(String item) {
+    public void validateItemFormat(String item) {
         if (!item.startsWith(LEFT_BRACKET)&&item.contains(QUANTITY_DELIMITER)&&item.endsWith(RIGHT_BRACKET)) {
             throw new IllegalArgumentException(INVALID_FORMAT.getMessage());
         }
     }
 
-    private void validateProductName(String productName, List<String> productNames) {
+    public void validateProductName(String productName, List<String> productNames) {
         if (!productNames.contains(productName)) {
             throw new IllegalArgumentException(PRODUCT_NOT_FOUND.getMessage());
         }
     }
 
-    private static int validateQuantity(String item) {
+    public static int validateQuantity(String item) {
         try {
             int quantity = Integer.parseInt(item);
             if (quantity <= 0) {
