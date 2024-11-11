@@ -1,21 +1,18 @@
 package store.service;
 
-import static store.common.Constants.EMPTY;
-import static store.common.Constants.LEFT_BRACKET;
-import static store.common.Constants.QUANTITY_DELIMITER;
-import static store.common.Constants.RIGHT_BRACKET;
+import static store.common.constant.Constants.EMPTY;
+import static store.common.constant.Constants.LEFT_BRACKET;
+import static store.common.constant.Constants.QUANTITY_DELIMITER;
+import static store.common.constant.Constants.RIGHT_BRACKET;
 import static store.util.ErrorMessage.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class ValidationService {
-    private static final String ITEM_PATTERN_REGEX = "\\[(\\w+)-(\\d+)]";
-    private static final Pattern VALID_ITEM_PATTERN = Pattern.compile(ITEM_PATTERN_REGEX);
 
-    public void validateInput (String input, List<String> productNames) {
+    public void validateOrder (String input, List<String> productNames) {
         validateNullorBlank(input);
-        validateItemFormat(input);
         List<String> items = parseItem(input);
         String productName = items.getFirst();
         String quantity = items.getLast();
@@ -30,12 +27,17 @@ public class ValidationService {
     }
 
     private List<String> parseItem(String input) {
+        List<String> items = new ArrayList<>();
+        validateItemFormat(input);
         String parseInput =input.replace(LEFT_BRACKET, EMPTY).replace(RIGHT_BRACKET, EMPTY);
-        return List.of(parseInput.split(QUANTITY_DELIMITER));
+        for (String item : parseInput.split(QUANTITY_DELIMITER)) {
+            items.add(item);
+        }
+        return items;
     }
 
     private void validateItemFormat(String item) {
-        if (!VALID_ITEM_PATTERN.matcher(item).matches()) {
+        if (!item.startsWith(LEFT_BRACKET)&&item.contains(QUANTITY_DELIMITER)&&item.endsWith(RIGHT_BRACKET)) {
             throw new IllegalArgumentException(INVALID_FORMAT.getMessage());
         }
     }
