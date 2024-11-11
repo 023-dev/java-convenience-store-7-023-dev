@@ -14,17 +14,6 @@ public class Products {
         this.products = products;
     }
 
-    public void addProduct(Product product) {
-        products.add(product);
-    }
-
-    public Optional<Product> findByName(String name) {
-        return products.stream()
-                .filter(product -> product.getName().equalsIgnoreCase(name))
-                .findFirst();
-    }
-
-
     public List<Product> getProducts() {
         return Collections.unmodifiableList(products);
     }
