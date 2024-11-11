@@ -11,8 +11,9 @@ public enum ErrorMessage {
 
     // 상품 관련 에러 메시지
     PRODUCT_NOT_FOUND("존재하지 않는 상품입니다."),
-    INSUFFICIENT_STOCK("재고가 부족하여 구매할 수 없습니다."),
+    INSUFFICIENT_STOCK("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요."),
     INVALID_PRICE_OR_STOCK("가격과 재고는 0 이상이어야 합니다."),
+   ORDER_CANCELED("구매 취소되었습니다. 다시 상품을 입력해 주세요."),
 
     // 프로모션 관련 에러 메시지
     INVALID_PROMOTION_CONDITION("프로모션 조건이 잘못되었습니다."),
@@ -20,7 +21,12 @@ public enum ErrorMessage {
 
     // 입력 관련 에러 메시지
     INVALID_INPUT_FORMAT("입력 형식이 잘못되었습니다."),
-    EMPTY_INPUT("입력이 비어 있습니다.");
+    INVALID_QUANTITY("수량은 정수여야 합니다."),
+    INVALID_FORMAT("[상품명-수량]형식이어야 합니다."),
+    NON_POSITIVE_QUANTITY("수량은 양수여야 합니다."),
+    INVALID_FORMAT_BRACKETS("각 항목은 대괄호로 둘러싸여야 합니다."),
+    EMPTY_INPUT("입력이 비어있거나 null값 입니다."),
+    INVALID_Y_OR_N("입력은 Y 또는 N만 가능합니다.");
 
     private static final String ERROR_MESSAGE_PREFIX = "[ERROR] ";
     private final String message;
