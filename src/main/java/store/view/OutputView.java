@@ -89,7 +89,7 @@ public class OutputView {
 
     private void printSummary(Receipt receipt) {
         System.out.println(RECEIPT_AMOUNT_HEADER);
-        System.out.printf("%s\t\t\t%s%n", RECEIPT_TOTAL_AMOUNT, formatPrice(receipt.getTotalAmount()));
+        System.out.printf("%s\t%d\t%s%n", RECEIPT_TOTAL_AMOUNT, receipt.getTotalQuantity(), formatPrice(receipt.getTotalAmount()));
         System.out.printf("%s\t\t\t-%s%n", RECEIPT_PROMOTION_DISCOUNT, formatPrice(receipt.getPromotionDiscount()));
         System.out.printf("%s\t\t\t-%s%n", RECEIPT_MEMBERSHIP_DISCOUNT, formatPrice(receipt.getMembershipDiscount()));
         System.out.printf("%s\t\t\t%s%n", RECEIPT_FINAL_AMOUNT, formatPrice(receipt.getFinalAmount()));
