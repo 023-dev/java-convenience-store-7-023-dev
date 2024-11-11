@@ -18,16 +18,16 @@ public class Product {
     public int getActualQuantity(int orderedQuantity) {
         if (promotion.isEmpty()) return orderedQuantity;
         Promotion promotion = this.promotion.get();
-        return promotion.calculatePaidQuantity(orderedQuantity);
+        return promotion.getPaidQuantity(orderedQuantity);
     }
 
     public int getFreeQuantity(int orderedQuantity) {
         if (promotion.isEmpty()) return 0;
         Promotion promo = promotion.get();
-        return promo.calculateFreeQuantity(orderedQuantity);
+        return promo.getFreeQuantity(orderedQuantity);
     }
 
-    public int calculateTotalPrice(int quantity) {
+    public int getTotalPrice(int quantity) {
         return price * quantity;
     }
 
