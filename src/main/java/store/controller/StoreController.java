@@ -1,29 +1,28 @@
 package store.controller;
 
-import static store.common.Constants.DELIMITER;
-import static store.common.Constants.EMPTY;
-import static store.common.Constants.LEFT_BRACKET;
-import static store.common.Constants.QUANTITY_DELIMITER;
-import static store.common.Constants.RIGHT_BRACKET;
-import static store.util.ErrorMessage.INVALID_FORMAT;
-import static store.util.ErrorMessage.INVALID_INPUT_FORMAT;
-import static store.util.ErrorMessage.INVALID_QUANTITY;
-import static store.util.ErrorMessage.NON_POSITIVE_QUANTITY;
+import static store.common.constant.Constants.DELIMITER;
+import static store.common.constant.Constants.EMPTY;
+import static store.common.constant.Constants.LEFT_BRACKET;
+import static store.common.constant.Constants.QUANTITY_DELIMITER;
+import static store.common.constant.Constants.RIGHT_BRACKET;
+import static store.util.ErrorMessage.ORDER_CANCELED;
 import static store.util.ErrorMessage.PRODUCT_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Optional;
 import store.model.domain.Order;
+import store.model.domain.Product;
 import store.model.domain.Products;
+import store.model.domain.Promotion;
 import store.model.domain.Promotions;
+import store.model.domain.Receipt;
 import store.service.ValidationService;
 import store.view.InputView;
 import store.view.OutputView;
 import store.service.PaymentService;
 
 public class StoreController {
-    private static final String YES = "Y";;
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -48,6 +47,7 @@ public class StoreController {
             try {
                 List<Order> orders = getOrders();
                 boolean isMember = askToMembership();
+                processPurchase(orders, isMember);
                 continueShopping = askToContinueShopping();
             } catch (IllegalArgumentException | IllegalStateException e) {
                 outputView.printErrorMessage(e.getMessage());
@@ -60,13 +60,12 @@ public class StoreController {
         outputView.printProducts(products);
     }
 
-
-
     private List<Order> getOrders() {
         while(true){
             try {
-                String input = inputView.readItemInput();
-                return validateAndParseOrders(input);
+                String input = inputView.readItem();
+                List<Order> orders = validateAndParseOrders(input);
+                return orders;
             } catch (IllegalArgumentException e) {
                 outputView.printErrorMessage(e.getMessage());
             }
@@ -76,9 +75,12 @@ public class StoreController {
     private List<Order> validateAndParseOrders(String input) {
         List<Order> orders = new ArrayList<>();
         for (String item : input.split(DELIMITER)) {
-            validationService.validateInput(item, products.getProductNames());
-            orders.add(parseOrder(item));
+            validationService.validateOrder(item, products.getProductNames());
+            Order order = parseOrder(item);
+            orders.add(order);
         }
+        validateStock(orders);
+        confirmOrdersWithPromotion(orders);
         return orders;
     }
 
@@ -86,7 +88,27 @@ public class StoreController {
         List<String> splitItem = parseItem(item);
         String productName = splitItem.getFirst();
         int quantity = Integer.parseInt(splitItem.getLast());
+        Optional<Product> productOpt = products.findProductByName(productName, true);
+        if (productOpt.isPresent() && productOpt.get().hasPromotion()) {
+            askFreeQuantity(productName, quantity);
+        }
         return new Order(productName, quantity);
+    }
+
+    private void confirmOrdersWithPromotion(List<Order> orders) {
+        for (Order order : orders) {
+            Product product = products.findPrioritizedProduct(order.getProductName()).get();
+            int nonPromoQuantity = order.getQuantity() - product.getStock();
+            if (nonPromoQuantity > 0) {
+                askPromotionAvailability(product.getName(), nonPromoQuantity);
+            }
+        }
+    }
+
+    private void askPromotionAvailability(String productName, int nonPromoQuantity) {
+        if (!inputView.readPromotionShortage(productName, nonPromoQuantity)) {
+            throw new IllegalArgumentException(ORDER_CANCELED.getMessage());
+        }
     }
 
     private List<String> parseItem(String input) {
@@ -94,13 +116,58 @@ public class StoreController {
         return List.of(parseInput.split(QUANTITY_DELIMITER));
     }
 
+    private Order askFreeQuantity(String productName, int quantity){
+        Product product = products.findProductByName(productName, true)
+                .orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND.getMessage()));
+        Promotion promotion = product.getPromotion().get();
+        if (promotion != null && promotion.isAdditionalFreeItem(quantity)) {
+            if (askPromotion(productName)) {
+                quantity += promotion.getFreeQuantity();
+            }
+        }
+        return new Order(productName, quantity);
+    }
+
+    private boolean askPromotion(String productName) {
+        while(true){
+            try {
+                return inputView.readPromotion(productName);
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
     private boolean askToMembership() {
-        String answer = inputView.readMembership();
-        return answer.equalsIgnoreCase(YES);
+        while(true){
+            try {
+                return inputView.readMembership();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private void processPurchase(List<Order> orders, boolean isMember) {
+        Receipt receipt = paymentService.checkout(products, orders, isMember);
+        outputView.printReceipt(receipt);
     }
 
     private boolean askToContinueShopping() {
-        String answer = inputView.readAdditionalPurchase();
-        return answer.equalsIgnoreCase(YES);
+        while(true){
+            try {
+                return inputView.readContinue();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
+    private void validateStock(List<Order> orders) {
+        for (Order order : orders) {
+            if (!products.hasSufficientStock(order.getProductName(), order.getQuantity())) {
+                throw new IllegalStateException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+            }
+        }
     }
 }
