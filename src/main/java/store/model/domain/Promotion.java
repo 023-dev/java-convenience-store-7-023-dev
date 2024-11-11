@@ -1,9 +1,10 @@
 package store.model.domain;
 
+import static store.util.ErrorMessage.INVALID_BUY_QUANTITY;
+import static store.util.ErrorMessage.INVALID_FREE_QUANTITY;
+
 import camp.nextstep.edu.missionutils.DateTimes;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class Promotion {
     private final String name;
@@ -18,7 +19,6 @@ public class Promotion {
         this.freeQuantity = freeQuantity;
         this.startDate = startDate;
         this.endDate = endDate;
-
         validate();
     }
 
@@ -29,26 +29,41 @@ public class Promotion {
 
     private void validateBuyQuantity() {
         if (buyQuantity <= 0) {
-            throw new IllegalArgumentException("[ERROR] 구매 수량 조건이 잘못되었습니다.");
+            throw new IllegalArgumentException(INVALID_BUY_QUANTITY.getMessage());
         }
     }
 
     private void validateFreeQuantity() {
         if (freeQuantity != 1) {
-            throw new IllegalArgumentException("[ERROR] 무료 증정 수량은 1개여야 합니다.");
+            throw new IllegalArgumentException(INVALID_FREE_QUANTITY.getMessage());
         }
     }
 
-    private boolean isInPromotionPeriod() {
+    public boolean isInPromotionPeriod() {
         LocalDateTime today = DateTimes.now();
         return (today.isAfter(startDate) || today.isEqual(startDate)) &&
                 (today.isBefore(endDate) || today.isEqual(endDate));
     }
 
-    public int calculateTotalQuantity(int purchasedQuantity) {
-        if (!isInPromotionPeriod()) {
-            return purchasedQuantity;
-        }
+    public boolean isAdditionalFreeItem(int orderedQuantity) {
+        return isInPromotionPeriod() && orderedQuantity < buyQuantity;
+    }
+
+    public int getPaidQuantity(int orderedQuantity) {
+        if (!isInPromotionPeriod()) return orderedQuantity;
+        int groups = orderedQuantity / (buyQuantity + freeQuantity);
+        int remaining = orderedQuantity % (buyQuantity + freeQuantity);
+        return (groups * buyQuantity) + Math.min(remaining, buyQuantity);
+    }
+
+    public int getFreeQuantity(int orderedQuantity) {
+        if (!isInPromotionPeriod()) return 0;
+        int groups = orderedQuantity / (buyQuantity + freeQuantity);
+        return groups * freeQuantity;
+    }
+
+    public int getTotalQuantity(int purchasedQuantity) {
+        if (!isInPromotionPeriod()) return purchasedQuantity;
         int totalFreeItems = (purchasedQuantity / buyQuantity) * freeQuantity;
         return purchasedQuantity + totalFreeItems;
     }
@@ -57,4 +72,7 @@ public class Promotion {
         return name;
     }
 
+    public int getFreeQuantity() {
+        return freeQuantity;
+    }
 }
